@@ -1,0 +1,116 @@
+ var app = require('express')();
+ var http = require('http').Server(app);
+ var io = require('socket.io')(http);
+ 
+ var Gpio = require('onoff').Gpio;
+ var piblaster = require('pi-blaster.js');
+ 
+ //link to directory
+ app.get('/', function(req,res){
+	res.sendfile(__dirname + '/index.html');
+ });
+
+//open socket 
+ io.on('connection', function(socket){
+	console.log('a user connected');
+	socket.on('disconnect', function(){
+		console.log('a user disconnected')
+	});
+	socket.on('forward', function(msg){
+		//console.log('button ' + msg);
+		forward();
+	});
+	socket.on('backward', function(msg){
+		//console.log('button ' + msg);
+		backward();
+	});
+	socket.on('left', function(msg){
+		//console.log('button ' + msg);
+		left();
+	});
+	socket.on('right', function(msg){
+		//console.log('button ' + msg);
+		right();
+	});
+	
+	socket.on('stop', function(msg){
+		//console.log('button ' + msg);
+		stop();
+	});
+	
+	socket.on('slow', function(msg){
+		//console.log('button ' + msg);
+		slow();
+	});
+	socket.on('fast', function(msg){
+		//console.log('button ' + msg);
+		fast();
+	});
+});
+
+//listen to port 3000
+http.listen(3000, function(){
+	console.log('open port 3000');
+});
+
+var comp = {dc:60,
+	O1:9,
+	O2:10,
+	O7:3,
+	O8:2};
+
+/* var RF = new Gpio(9,'out');
+var RB = new Gpio(10,'out');
+var LF = new Gpio(3,'out');
+var LB = new Gpio(2,'out'); */
+
+
+function forward(){
+	//LF.write(1);
+	//RF.write(1);
+	piblaster.setPwm(1,(comp.dc)/100);  //LF , channel 1
+	piblaster.setPwm(2,(comp.dc)/100);  //RF , channel 2
+}
+
+function backward(){
+	//LB.write(1);
+	//RB.write(1);
+	piblaster.setPwm(0,(comp.dc)/100);  //LB , channel 0
+	piblaster.setPwm(3,(comp.dc)/100);  //RB , channel 3
+} 
+
+function right(){
+	/* LF.write(1);
+	RB.write(1); */
+	piblaster.setPwm(1,(comp.dc)/100);
+	piblaster.setPwm(3,(comp.dc)/100);
+}
+ 
+function left(){
+	/* LB.write(1);
+	RF.write(1); */
+	piblaster.setPwm(0,(comp.dc)/100);
+	piblaster.setPwm(2,(comp.dc)/100);
+} 
+ function stop(){
+	piblaster.setPwm(0,0);
+	piblaster.setPwm(1,0);
+	piblaster.setPwm(2,0);
+	piblaster.setPwm(3,0);
+ }
+ 
+ function slow(){
+	comp.dc=comp.dc-10;
+	//console.log(comp.dc);
+//	document.getElementById("speed").innerHTML=comp.dc;
+ }
+ 
+ function fast(){
+	comp.dc=comp.dc+10;
+	//console.log(comp.dc);
+//	document.getElementById("speed").innerHTML=comp.dc;
+ } 
+ 
+
+
+

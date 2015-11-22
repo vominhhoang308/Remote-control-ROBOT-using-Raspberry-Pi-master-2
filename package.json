@@ -1,0 +1,22 @@
+{
+  "name": "robot",
+  "version": "1.0.0",
+  "description": "RC Car",
+  "main": "jc.js",
+  "dependencies": {
+    "express": "^4.10.4",
+    "onoff": "^0.3.2",
+    "pi-blaster.js": "0.0.2",
+    "pi-gpio": "^0.0.6",
+    "pi-motor": "0.0.1",
+    "rpi-gpio": "^0.5.0",
+    "socket.io": "^1.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
